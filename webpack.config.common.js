@@ -10,6 +10,6 @@ module.exports =  {
   context:path.resolve(__dirname,'src'),
   resolve: {
     extensions: ['.js', '.jsx','.json'],
-    modules: [path.resolve(rootPath, 'src'), 'node_modules']
+    modules: [path.resolve(__dirname, 'src'), 'node_modules']
   },
 }

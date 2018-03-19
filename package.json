@@ -4,14 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "cross-env NODE_ENV=development webpack-dev-server --hotOnly --progress --config ./webpack.config.dev.js ",
+    "build": "cross-env NODE_ENV=production webpack --progress -p --config ./webpack.config.prod.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "store"
+  ],
+  "author": "zido",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^8.1.0",
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.2",
     "babel-loader": "^7.1.4",
     "babel-plugin-import": "^1.6.7",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
@@ -52,8 +57,10 @@
     "webpack-merge": "^4.1.2"
   },
   "dependencies": {
+    "history": "^4.7.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
+    "react-loadable": "^5.3.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^4.0.8",
