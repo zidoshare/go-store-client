@@ -6,7 +6,7 @@ import { getMatch, make } from './helpers/renderer'
 import stats from '../dist/react-loadable.json'
 import Koa from 'koa'
 const server = new Koa()
-const port = process.env.port || 3002,
+const port = process.env.port || 3000,
   staticCache = require('koa-static-cache'),
   cors = require('koa2-cors')
 
