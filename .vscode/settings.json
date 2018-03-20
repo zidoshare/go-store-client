@@ -1,0 +1,5 @@
+{
+  "editor.tabSize": 2,
+  "vetur.format.defaultFormatter.html": "js-beautify-html", //vetur plugin setting，ignoring without the vetur plugin
+  "vetur.format.defaultFormatter.js": "vscode-typescript", //vetur plugin setting.ignoring without the vetur plugin
+}

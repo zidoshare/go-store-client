@@ -2,10 +2,10 @@
 const path = require('path')
 module.exports =  {
   output:{
-    filename:'bundle.[hash].js',
+    filename:'[name].[hash].js',
     path:path.resolve(__dirname,'dist'),
     publicPath:'/',
-    chunkFilename:'[name].chunk.js',
+    chunkFilename:'[name].chunk.[hash:8].js',
   },
   context:path.resolve(__dirname,'src'),
   resolve: {

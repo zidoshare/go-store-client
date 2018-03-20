@@ -1,26 +1,24 @@
-'usr strict'
-var merge = require('webpack-merge')
-var common = require('./webpack.config.common')
-var webpack = require('webpack')
-var path = require('path')
+const path = require('path')
+const webpack = require('webpack')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const ManifestPlugin = require('webpack-manifest-plugin')
+const { ReactLoadablePlugin } = require('react-loadable/webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const common = require('./webpack.config.common')
+const merge = require('webpack-merge')
 
 module.exports = merge(common, {
-  entry: {
-    client: 'client.js',
-  },
-  devtool: 'source-map',
   module: {
     rules: [{
-      test: /.(js|jsx)$/,
+      test: /\.jsx?$/,
       exclude: /node_modules/,
       include: path.resolve(__dirname, 'src'),
       use: {
         loader: 'babel-loader',
         options: {
-          cacheDirectory: true,
+          cacheDirectory: true
         }
       }
     }, {
@@ -37,7 +35,6 @@ module.exports = merge(common, {
         }, {
           loader: 'postcss-loader',
           options: {
-            plugins: () => [require('autoprefixer')({ browsers: 'last 5 versions' })],
             sourceMap: true,
           }
         }, {
@@ -62,47 +59,31 @@ module.exports = merge(common, {
           name: 'img/[sha512:hash:base64:7].[ext]'
         }
       }
-    }]
-  },
-  plugins: [
+    }],
+  }, plugins: [
+    new ManifestPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new HtmlWebpackPlugin({
-      template: './index.html',
-      filename: 'index.html',
-      inject: 'body',
-      favicon: './assets/z.png',
-      title: 'go-store-client',
+    new ExtractTextPlugin({
+      filename: 'css/style.[hash].css',
+      allChunks: true,
     }),
-    new ProgressBarPlugin({ summary: false }),
-    new webpack.HotModuleReplacementPlugin(), // HMR全局启用
-    new webpack.NamedModulesPlugin(), // 在HMR更新的浏览器控制台中打印更易读的模块名称
+    new CopyWebpackPlugin([{ from: 'assets/z.png', to: './dist' }]),
+    new CleanWebpackPlugin(['./dist'], { root: './', }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }),
+    new webpack.optimize.OccurrenceOrderPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'go-store-client',
+      filename: 'index.html',
+      template: './index.html',
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: ['vendors', 'manifest'],
-      minChunks: 2,
+      minChunks: 2
     }),
-    new ExtractTextPlugin({ filename: 'style.[hash].css', }),
-  ],
-  devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
-    historyApiFallback: true,
-    hot: true,
-    publicPath: '/',
-    clientLogLevel: 'none',
-    port: 3000,
-    stats: {
-      colors: true
-    },
-    proxy: {
-      '/api/v1/*': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-    host: '0.0.0.0',
-    disableHostCheck: true,
-  }
+    new ReactLoadablePlugin({
+      filename: path.join('./dist/react-loadable.json'),
+    }),
+  ]
 })
