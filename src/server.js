@@ -16,7 +16,7 @@ var path = require('path')
 server.use(cors())
 
 const clientRouter = async (ctx, next) => {
-  let html = fs.readFileSync(path.join(path.resolve(__dirname, '../dist'), 'index.html'), 'utf-8')
+  let html = fs.readFileSync(path.join(path.resolve(process.cwd(), 'dist'), 'index.html'), 'utf-8')
   let store = configureStore()
 
   let branch = matchRoutes(Routes, ctx.req.url)
@@ -38,7 +38,7 @@ const clientRouter = async (ctx, next) => {
       ctx,
       store,
       context,
-      html,
+      template: html,
       Routes,
       stats,
     })
@@ -56,7 +56,7 @@ const clientRouter = async (ctx, next) => {
 }
 
 server.use(clientRouter)
-server.use(staticCache(path.resolve(__dirname, '../dist'), {
+server.use(staticCache(path.resolve(process.cwd(), 'dist'), {
   maxAge: 365 * 24 * 60 * 60,
   gzip: true
 }))

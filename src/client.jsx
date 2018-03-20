@@ -1,5 +1,5 @@
 import React from 'react'
-import { hydrate, render } from 'react-dom'
+import { hydrate, render, unmountComponentAtNode } from 'react-dom'
 import { ConnectedRouter } from 'react-router-redux'
 import Loadable from 'react-loadable'
 import { renderRoutes } from 'react-router-config'
@@ -10,34 +10,29 @@ import configuraStore from './store/configureStore'
 import createHistory from 'history/createBrowserHistory'
 const history = createHistory()
 let store = configuraStore(initialState)
-
-const renderApp = () => {
+const Root = document.getElementById('root')
+const renderApp = (routes) => {
   const renderMethod = process.env.NODE_ENV === 'development' ? render : hydrate
   renderMethod(
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        {renderRoutes(Routes)}
+        {renderRoutes(routes)}
       </ConnectedRouter>
-    </Provider>, document.getElementById('root'))
+    </Provider>, Root)
 }
 
-Loadable.preloadReady().then(renderApp)
+Loadable.preloadReady().then(renderApp.bind(this, Routes))
 
 if (process.env.NODE_ENV === 'development') {
   if (module.hot) {
     module.hot.accept('./reducers/index.js', () => {
-      let newReducer = require('./reducers/index.js')
+      let newReducer = require('./reducers/index.js').default
       store.replaceReducer(newReducer)
     })
-    module.hot.accept('./Routes.js', () => {
-      let newReducer = require('./reducers/index.js')
-      store.replaceReducer(newReducer)
-      render(
-        <Provider store={store}>
-          <ConnectedRouter history={history}>
-            {renderRoutes(Routes)}
-          </ConnectedRouter>
-        </Provider>, document.getElementById('root'))
+    module.hot.accept('./Routes.jsx', () => {
+      unmountComponentAtNode(Root)
+      var r = require('./Routes').default
+      renderApp(r)
     })
   }
 }

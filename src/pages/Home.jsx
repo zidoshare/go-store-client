@@ -4,7 +4,18 @@ import { bindActionCreators } from 'redux'
 import * as actions from '../actions/home'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import Helmet from 'react-helmet'
 class Home extends React.Component {
+  static propTypes = {
+    add: PropTypes.func.isRequired,
+    count: PropTypes.number.isRequired,
+    homeInfo: PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      age: PropTypes.number.isRequired,
+    }).isRequired,
+    getHomeInfo: PropTypes.func.isRequired,
+  }
+
   constructor(props) {
     super(props)
     this.state = {
@@ -26,6 +37,10 @@ class Home extends React.Component {
     let { add, count, homeInfo: { name, age } } = this.props
     return (
       <div>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>this is home</title>
+        </Helmet>
         <h3>hello world</h3>
         <p className="center-align" >Look at these amazing features!!!</p>
         <p>my name is {name}</p>
@@ -37,17 +52,6 @@ class Home extends React.Component {
     )
   }
 }
-
-Home.propTypes = {
-  add: PropTypes.func.isRequired,
-  count: PropTypes.number.isRequired,
-  homeInfo: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    age: PropTypes.number.isRequired,
-  }).isRequired,
-  getHomeInfo: PropTypes.func.isRequired,
-}
-
 const mapStateToProps = (state) => ({
   count: state.counter.count,
   homeInfo: state.homeInfo,

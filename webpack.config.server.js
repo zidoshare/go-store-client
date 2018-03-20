@@ -1,18 +1,20 @@
 const path = require('path')
 const webpack = require('webpack')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const ManifestPlugin = require('webpack-manifest-plugin')
-const { ReactLoadablePlugin } = require('react-loadable/webpack')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const webpackNodeExternals = require('webpack-node-externals')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const common = require('./webpack.config.common')
-const merge = require('webpack-merge')
-
-module.exports = merge(common, {
-  entry: {
-    client: 'client.jsx',
+module.exports = {
+  entry: './src/server.js',
+  output: {
+    filename: 'server.build.js',
+    path: path.resolve(__dirname, 'build'),
   },
+  resolve: {
+    extensions: ['.js', '.jsx','.json'],
+    modules: [path.resolve(__dirname, 'src'), 'node_modules']
+  },
+  target: 'node',
+  externals: [webpackNodeExternals()],
   module: {
     rules: [{
       test: /\.jsx?$/,
@@ -52,46 +54,18 @@ module.exports = merge(common, {
           }
         }]
       }),
-    }, {
-      test: /\.(svg|woff2?|ttf|eot|jpe?g|png|gif)(\?.*)?$/i,
-      exclude: /node_modules/,
-      use: {
-        loader: 'url-loader',
-        options: {
-          limit: 1024,
-          name: 'img/[sha512:hash:base64:7].[ext]'
-        }
-      }
     }],
   },
   plugins: [
-    new ManifestPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new CleanWebpackPlugin(['./build']),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }),
     new ExtractTextPlugin({
       filename: 'css/style.[hash].css',
       allChunks: true,
     }),
-    new CopyWebpackPlugin([{ from: 'assets/z.png', to: 'favicon.ico' }]),
-    new CleanWebpackPlugin(['./dist']),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'go-store-client',
-      filename: 'index.html',
-      template: './index.prod.html',
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: ['vendors', 'manifest'],
-      minChunks: 2
-    }),
-    new ReactLoadablePlugin({
-      filename: path.join('./dist/react-loadable.json'),
-    }),
   ],
-  externals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-  }
-})
+}

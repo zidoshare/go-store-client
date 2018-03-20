@@ -8,9 +8,7 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = merge(common, {
-  entry: {
-    client: 'client.js',
-  },
+  entry: ['react-hot-loader/patch', 'client.jsx'],
   devtool: 'source-map',
   module: {
     rules: [{
@@ -37,7 +35,6 @@ module.exports = merge(common, {
         }, {
           loader: 'postcss-loader',
           options: {
-            plugins: () => [require('autoprefixer')({ browsers: 'last 5 versions' })],
             sourceMap: true,
           }
         }, {
@@ -73,7 +70,7 @@ module.exports = merge(common, {
       favicon: './assets/z.png',
       title: 'go-store-client',
     }),
-    new ProgressBarPlugin({ summary: false }),
+    new ProgressBarPlugin(),
     new webpack.HotModuleReplacementPlugin(), // HMR全局启用
     new webpack.NamedModulesPlugin(), // 在HMR更新的浏览器控制台中打印更易读的模块名称
     new webpack.DefinePlugin({
@@ -89,12 +86,10 @@ module.exports = merge(common, {
     contentBase: path.resolve(__dirname, 'dist'),
     historyApiFallback: true,
     hot: true,
+    hotOnly: true,
     publicPath: '/',
     clientLogLevel: 'none',
     port: 3000,
-    stats: {
-      colors: true
-    },
     proxy: {
       '/api/v1/*': {
         target: 'http://localhost:8080',
