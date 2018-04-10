@@ -5,29 +5,11 @@
  */
 import objToQuery from './objToQuery'
 import HttpHeader from './HttpHeader'
-import message from './message'
-import { push } from '../Util/history'
 export const defaultReject = (err, showError) => {
   let msg
   switch (err.code) {
     case -1:
       msg = '服务器异常'
-      break
-    case 1:
-      msg = '账号未登录'
-      push({ path: '/login' })
-      break
-    case 2:
-      msg = '权限不足，拒绝访问'
-      break
-    case 3:
-      msg = '账号或密码错误'
-      break
-    case 4:
-      msg = '登陆信息失效，请重新登陆'
-      break
-    case 5:
-      msg = '密码错误'
       break
     case -404:
       msg = '未找到请求地址'
@@ -41,11 +23,6 @@ export const defaultReject = (err, showError) => {
       msg = '未知错误，code:' + err.code
       break
   }
-  if (msg && showError)
-    message().error({
-      content: msg,
-      duration: 2,
-    })
   return msg
 }
 export const createHttpPromise = (url, {
@@ -80,7 +57,6 @@ export const createHttpPromise = (url, {
       method: method,
       headers: headers,
       body: data,
-      credentials: 'include',
     }).then((response) => {
       const contentType = response.headers.get('content-type')
       if (response.ok && contentType && contentType.indexOf('application/json') !== -1)

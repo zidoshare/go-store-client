@@ -14,6 +14,7 @@ class Home extends React.Component {
       age: PropTypes.number.isRequired,
     }).isRequired,
     getHomeInfo: PropTypes.func.isRequired,
+    getItems:PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -24,6 +25,7 @@ class Home extends React.Component {
   }
   componentDidMount() {
     this.props.getHomeInfo()
+    this.props.getItems()
   }
 
   componentDidCatch(err, info) {
