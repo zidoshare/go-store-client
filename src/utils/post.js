@@ -5,7 +5,7 @@
  */
 import objToQuery from './objToQuery'
 import HttpHeader from './HttpHeader'
-export const defaultReject = (err, showError) => {
+export const defaultReject = (err/*, showError*/) => {
   let msg
   switch (err.code) {
     case -1:

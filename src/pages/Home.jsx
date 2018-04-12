@@ -25,7 +25,7 @@ class Home extends React.Component {
   }
   componentDidMount() {
     this.props.getHomeInfo()
-    this.props.getItems()
+    //    this.props.getItems()
   }
 
   componentDidCatch(err, info) {

@@ -12,6 +12,19 @@ module.exports = merge(common, {
   devtool: 'source-map',
   module: {
     rules: [{
+      test:/.(js|jsx)$/,
+      include:path.resolve(__dirname,'src'),
+      enforce: 'pre',
+      exclude:/node_modules/,
+      use:{
+        loader:'eslint-loader',
+        options: {
+          emitWarning: true,
+          emitError: true,
+          configFile: path.join(__dirname, '.eslintrc.json')
+        }
+      }
+    },{
       test: /.(js|jsx)$/,
       exclude: /node_modules/,
       include: path.resolve(__dirname, 'src'),

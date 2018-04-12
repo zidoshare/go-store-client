@@ -9,7 +9,7 @@ const Loading = () => {
 const routesConfig = [{
   path: '/',
   component: Loadable({
-    loader: () => import(/* webpackChunkName: 'AppLayout'*/'./pages/AppLayout'),
+    loader: () => import(/* webpackChunkName: 'AppLayout'*/'./pages/MainLayout'),
     loading: Loading,
   }),
   routes: [{
